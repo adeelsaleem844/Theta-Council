@@ -130,13 +130,21 @@ python -m council dashboard  ->  http://127.0.0.1:8787
 PA3YGPXXKC9E
 ```
 
+## Cover image
+
+`assets/cover.png` — 1200x630, ready to upload.
+
 ## Video presentation
 
 `docs/VIDEO.md` has the full 3-minute script with timings and exact commands.
+NOT YET RECORDED — this is the one deliverable that needs your voice.
 
 ## Slide presentation
 
-`docs/SLIDES.md` has 12 slides, ready to paste into Slides/Keynote/PowerPoint.
+`assets/Theta-Council-slides.pdf` — 12 slides, 16:9, ready to upload.
+Source is `assets/slides.html`; re-render after any edit with:
+
+    chrome --headless --no-pdf-header-footer --print-to-pdf=assets/Theta-Council-slides.pdf assets/slides.html
 
 ## Social engagement — up to 5 post links
 
@@ -184,8 +192,10 @@ Drafts in `SOCIAL.md`. Tag **@lablabai** and **@AlpacaHQ** on X, and
 **Submit**
 - [x] Hosted project page published: https://claude.ai/code/artifact/2b49dc51-935a-41ea-b2cb-570f953be199
 - [x] Repo pushed — https://github.com/adeelsaleem844/Theta-Council  (confirm it is set to Public in repo Settings)
-- [ ] Cover image uploaded
+- [x] Cover image built — `assets/cover.png`
+- [ ] Cover image uploaded to the form
 - [ ] Video uploaded and linked
-- [ ] Slides uploaded
+- [x] Slides built — `assets/Theta-Council-slides.pdf`
+- [ ] Slides uploaded to the form
 - [ ] Account ID in the form
 - [ ] Social links in the form

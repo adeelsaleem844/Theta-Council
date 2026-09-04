@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+  *{box-sizing:border-box;margin:0}
+  html,body{width:1200px;height:630px;overflow:hidden}
+  body{
+    background:#0b1220; color:#e5ebf4;
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    display:grid; grid-template-columns:1fr 400px;
+    /* a hairline grid, like a risk terminal's background */
+    background-image:
+      linear-gradient(rgba(232,163,61,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,163,61,.045) 1px, transparent 1px);
+    background-size:40px 40px, 40px 40px;
+  }
+  .left{padding:60px 40px 58px 64px;display:flex;flex-direction:column}
+  .eyebrow{
+    font:500 13px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;
+    text-transform:uppercase;color:#75839a;
+  }
+  h1{
+    font:400 104px/.94 Newsreader,Georgia,serif;letter-spacing:-.025em;
+    margin:22px 0 0;color:#fff;
+  }
+  .rule{width:96px;height:4px;background:#e8a33d;margin:26px 0 22px}
+  .tag{font:400 29px/1.34 Newsreader,Georgia,serif;color:#c3cddd;max-width:18em}
+  .tag b{color:#e8a33d;font-weight:500;font-style:italic}
+  .spacer{flex:1}
+  .chips{display:flex;gap:9px;flex-wrap:wrap}
+  .chip{
+    font:400 14px/1 "IBM Plex Mono",monospace;padding:9px 12px;
+    border:1px solid #2a3646;border-radius:4px;color:#a4b1c4;background:#101827;
+  }
+  .chip b{color:#fff;font-weight:500}
+  .chip.on{border-color:#3f9c8f;color:#4fb3a3;background:#0f2420}
+
+  /* right rail: the decision rule, drawn to scale */
+  .right{
+    border-left:1px solid #1d2836;background:rgba(16,24,39,.72);
+    padding:56px 40px;display:flex;flex-direction:column;justify-content:center;
+  }
+  .rl{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.18em;
+      text-transform:uppercase;color:#75839a;margin-bottom:22px}
+  .row{display:grid;grid-template-columns:52px 1fr 46px;align-items:center;
+       gap:10px;margin-bottom:11px}
+  .sym{font:400 14px/1 "IBM Plex Mono",monospace;color:#e5ebf4;text-align:right}
+  .track{height:15px;background:#16202f;border-radius:2px;position:relative;
+         overflow:hidden}
+  .track i{position:absolute;left:0;top:0;bottom:0;border-radius:2px;display:block}
+  .val{font:400 14px/1 "IBM Plex Mono",monospace;color:#a4b1c4;
+       font-variant-numeric:tabular-nums}
+  .dim .sym,.dim .val{color:#5b697e}
+  .note{font:400 13px/1.5 "IBM Plex Mono",monospace;color:#75839a;margin-top:20px;
+        padding-top:16px;border-top:1px solid #1d2836}
+  .note b{color:#e8a33d;font-weight:500}
+</style></head>
+<body>
+  <div class="left">
+    <div class="eyebrow">Alpaca AI Trading Agents Hackathon</div>
+    <h1>Theta&nbsp;Council</h1>
+    <div class="rule"></div>
+    <div class="tag">An autonomous options desk where the LLM has
+      <b>a veto and a dial</b> — never the wheel.</div>
+    <div class="spacer"></div>
+    <div class="chips">
+      <span class="chip">paper <b>PA3YGPXXKC9E</b></span>
+      <span class="chip on">options level 3</span>
+      <span class="chip"><b>24</b> risk gates</span>
+      <span class="chip">cli <b>·</b> mcp <b>·</b> rest</span>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="rl">implied ÷ realised vol</div>
+    <div class="row"><span class="sym">NVDA</span>
+      <span class="track"><i style="width:86%;background:#e8a33d"></i></span>
+      <span class="val">1.59</span></div>
+    <div class="row"><span class="sym">QQQ</span>
+      <span class="track"><i style="width:75%;background:#e8a33d"></i></span>
+      <span class="val">1.50</span></div>
+    <div class="row"><span class="sym">GOOGL</span>
+      <span class="track"><i style="width:62%;background:#e8a33d"></i></span>
+      <span class="val">1.40</span></div>
+    <div class="row"><span class="sym">META</span>
+      <span class="track"><i style="width:51%;background:#e8a33d"></i></span>
+      <span class="val">1.31</span></div>
+    <div class="row"><span class="sym">SPY</span>
+      <span class="track"><i style="width:36%;background:#e8a33d"></i></span>
+      <span class="val">1.19</span></div>
+    <div class="row dim"><span class="sym">MSFT</span>
+      <span class="track"><i style="width:28%;background:#2a3646"></i></span>
+      <span class="val">1.12</span></div>
+    <div class="row dim"><span class="sym">AMD</span>
+      <span class="track"><i style="width:11%;background:#2a3646"></i></span>
+      <span class="val">0.99</span></div>
+    <div class="note"><b>≥1.12</b> sell · <b>≤0.98</b> buy · else no trade</div>
+  </div>
+</body></html>

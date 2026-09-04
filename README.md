@@ -5,6 +5,8 @@
 Built for the [Alpaca AI Trading Agents Hackathon](https://lablab.ai/event/alpaca-ai-trading-agents-hackathon), 28 Aug – 4 Sep 2026.
 Paper trading only.
 
+![Theta Council](assets/cover.png)
+
 **[Project page →](https://claude.ai/code/artifact/2b49dc51-935a-41ea-b2cb-570f953be199)** · [One-page write-up](WRITEUP.md) · [Verified Alpaca surface](docs/MCP_DISCOVERY.md)
 
 ```bash

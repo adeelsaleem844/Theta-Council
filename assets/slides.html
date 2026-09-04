@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Theta Council — deck</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* 16:9 slides, one per printed page. Chrome print-to-PDF gives a real deck. */
+  @page{ size:338.7mm 190.5mm; margin:0 }
+  *{box-sizing:border-box;margin:0}
+  html{background:#050a12}
+  body{font-family:"IBM Plex Sans",system-ui,sans-serif;color:#e5ebf4}
+
+  .slide{
+    width:1280px;height:720px;position:relative;overflow:hidden;
+    background:#0b1220;padding:64px 76px;display:flex;flex-direction:column;
+    background-image:
+      linear-gradient(rgba(232,163,61,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(232,163,61,.04) 1px,transparent 1px);
+    background-size:40px 40px,40px 40px;
+    break-after:page; margin:0 auto 22px;
+  }
+  .slide:last-child{break-after:auto;margin-bottom:0}
+  @media print{ .slide{margin:0} body{background:#0b1220} }
+
+  .num{
+    position:absolute;right:34px;bottom:26px;
+    font:400 12px/1 "IBM Plex Mono",monospace;color:#3d4a5c;
+  }
+  .kicker{
+    font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;
+    text-transform:uppercase;color:#75839a;margin-bottom:26px;
+  }
+  h2{font:400 58px/1.06 Newsreader,Georgia,serif;letter-spacing:-.02em;color:#fff}
+  h2 em{color:#e8a33d;font-style:italic}
+  .sub{font:400 25px/1.42 Newsreader,Georgia,serif;color:#aebbcd;
+       max-width:24em;margin-top:20px}
+  .body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  p{font-size:20px;line-height:1.55;color:#aebbcd;max-width:44em}
+  p+p{margin-top:14px}
+  strong{color:#fff;font-weight:600}
+  .amber{color:#e8a33d}
+  .rule{width:84px;height:4px;background:#e8a33d;margin:24px 0}
+
+  pre{
+    font:400 19px/1.75 "IBM Plex Mono",monospace;color:#e5ebf4;
+    background:#101827;border:1px solid #1d2836;border-left:3px solid #e8a33d;
+    border-radius:5px;padding:22px 26px;white-space:pre;overflow:hidden;
+  }
+  pre .c{color:#5f6d81}
+  pre .k{color:#e8a33d}
+  pre .t{color:#4fb3a3}
+
+  table{width:100%;border-collapse:collapse;font-size:19px}
+  th{text-align:left;font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;
+     text-transform:uppercase;color:#75839a;padding:0 18px 12px 0;
+     border-bottom:1px solid #2a3646}
+  td{padding:13px 18px 13px 0;border-bottom:1px solid #18222f;color:#aebbcd;
+     vertical-align:top}
+  td.n{color:#fff;font-weight:600;white-space:nowrap}
+  td.mono{font-family:"IBM Plex Mono",monospace;font-size:17px}
+  .no{color:#5f6d81;font-style:italic}
+  .hot{color:#e8a33d;font-weight:500}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+  .can{border:1px solid #2a3646;border-radius:6px;overflow:hidden}
+  .can h4{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.13em;
+          text-transform:uppercase;padding:13px 18px;background:#101827;
+          border-bottom:1px solid #2a3646}
+  .can.y h4{color:#4fb3a3}.can.n h4{color:#e08472}
+  .can li{list-style:none;padding:12px 18px;border-bottom:1px solid #18222f;
+          font:400 18px/1.4 "IBM Plex Sans",sans-serif;color:#aebbcd}
+  .can li:last-child{border-bottom:0}
+  .can ul{margin:0;padding:0}
+
+  ol.cyc{list-style:none;margin:0;padding:0;counter-reset:s;
+         display:grid;grid-template-columns:1fr 1fr;gap:0 44px}
+  ol.cyc li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;
+            gap:12px;padding:12px 0;border-bottom:1px solid #18222f}
+  ol.cyc li::before{content:counter(s,decimal-leading-zero);
+    font:500 13px/1.6 "IBM Plex Mono",monospace;color:#5f6d81}
+  ol.cyc b{color:#fff;font-weight:600;font-size:19px;display:block}
+  ol.cyc span{color:#93a1b5;font-size:16px;line-height:1.4}
+  ol.cyc li.f::before{color:#e8a33d}
+  ol.cyc li.f b{color:#e8a33d}
+
+  .gates{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+  .g{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:9px 0;
+     border-bottom:1px solid #18222f;align-items:baseline}
+  .g .m{font:500 10px/1.7 "IBM Plex Mono",monospace;color:#4fb3a3;letter-spacing:.06em}
+  .g .d{font:400 15px/1.6 "IBM Plex Mono",monospace;color:#93a1b5}
+  .g .d b{color:#fff;font-weight:500}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .tag{font:400 15px/1 "IBM Plex Mono",monospace;padding:8px 11px;
+       border:1px solid #2a3646;border-radius:4px;color:#93a1b5;background:#101827}
+
+  .pipes{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .pipe{border:1px solid #1d2836;border-radius:6px;background:#101827;padding:22px}
+  .pipe .pn{font:500 19px/1 "IBM Plex Mono",monospace;color:#fff;margin-bottom:6px}
+  .pipe .po{font:400 11px/1 "IBM Plex Mono",monospace;color:#e8a33d;
+            letter-spacing:.13em;text-transform:uppercase;margin-bottom:14px}
+  .pipe.f .po{color:#5f6d81}
+  .pipe p{font-size:16.5px;line-height:1.5;max-width:none}
+
+  ul.plain{margin:0;padding:0;list-style:none}
+  ul.plain li{padding:13px 0;border-bottom:1px solid #18222f;color:#aebbcd;
+              font-size:19px;line-height:1.5}
+  ul.plain li:last-child{border-bottom:0}
+  ul.plain b{color:#fff}
+  code{font:400 17px "IBM Plex Mono",monospace;color:#e8a33d}
+
+  /* title + closing slides */
+  .title{justify-content:center}
+  .title h1{font:400 116px/.95 Newsreader,Georgia,serif;letter-spacing:-.03em;color:#fff}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:38px}
+  .chip{font:400 15px/1 "IBM Plex Mono",monospace;padding:10px 13px;
+        border:1px solid #2a3646;border-radius:4px;color:#aebbcd;background:#101827}
+  .chip b{color:#fff;font-weight:500}
+  .chip.on{border-color:#3f9c8f;color:#4fb3a3;background:#0f2420}
+  .quote{font:400 italic 50px/1.22 Newsreader,Georgia,serif;color:#fff;
+         max-width:20em;border-left:4px solid #e8a33d;padding-left:32px}
+  .disc{font:400 13px/1.5 "IBM Plex Sans",sans-serif;color:#5f6d81;
+        max-width:70em;margin-top:auto}
+</style></head><body>
+
+<!-- 1 -->
+<section class="slide title">
+  <div class="kicker">Alpaca AI Trading Agents Hackathon · lablab.ai × Alpaca</div>
+  <h1>Theta Council</h1>
+  <div class="rule"></div>
+  <div class="sub">An autonomous options desk on Alpaca.<br>
+    Five agents, one veto, a full audit trail.</div>
+  <div class="chips">
+    <span class="chip">paper <b>PA3YGPXXKC9E</b></span>
+    <span class="chip">start <b>$100,000</b></span>
+    <span class="chip on">options level 3</span>
+    <span class="chip"><b>0</b> dependencies</span>
+    <span class="chip"><b>52</b> tests</span>
+  </div>
+  <div class="num">01</div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="kicker">The problem</div>
+  <div class="body">
+    <h2>Most “AI trading agents” hand a model an order endpoint and a prompt that
+      says <em>be careful</em>.</h2>
+    <div class="rule"></div>
+    <p>Models are <strong>excellent</strong> at reading context across a dozen
+      instruments at once.</p>
+    <p>Models are <strong>unreliable</strong> about position size on the fortieth
+      API call of the session.</p>
+    <p class="amber" style="margin-top:22px;font-size:22px">So don't ask them to be.</p>
+  </div>
+  <div class="num">02</div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="kicker">The inversion</div>
+  <div class="body">
+    <div class="quote">The LLM has a veto and a dial. It never has the wheel.</div>
+    <div class="two" style="margin-top:40px">
+      <div class="can y"><h4>It can</h4><ul>
+        <li>reject any trade, with a reason</li>
+        <li>lower conviction → lower size</li>
+        <li>set a posture that only tightens risk</li>
+      </ul></div>
+      <div class="can n"><h4>It cannot</h4><ul>
+        <li>invent a strike</li>
+        <li>raise a quantity</li>
+        <li>widen a risk limit</li>
+        <li>reach an order endpoint</li>
+      </ul></div>
+    </div>
+    <p style="margin-top:22px"><code>size_multiplier</code> is clamped to ≤ 1.0.
+      There is no way to ask for more size.</p>
+  </div>
+  <div class="num">03</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="kicker">The edge · variance risk premium</div>
+  <div class="body">
+    <h2 style="font-size:44px">Selling an option is selling a
+      <em>forecast of movement</em>.</h2>
+    <p style="margin-top:18px">The market prices that forecast at <strong>implied
+      volatility</strong>. The underlying then delivers <strong>realised
+      volatility</strong>. On average the first is larger — a fee paid to whoever
+      carries the gamma risk, not a prediction about direction.</p>
+    <pre style="margin-top:24px">vrp_ratio = ATM implied ÷ 20-day realised
+
+  <span class="k">≥ 1.12</span>   the market overpays for movement   <span class="c">→ SELL premium</span>
+  <span class="t">≤ 0.98</span>   movement is cheap                  <span class="c">→ BUY  premium</span>
+ between   <span class="c">→ NO TRADE</span></pre>
+    <p style="margin-top:20px" class="amber">The third branch is where a real desk
+      spends most of its life — and the branch nobody demos.</p>
+  </div>
+  <div class="num">04</div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="kicker">Pricing the edge</div>
+  <div class="body">
+    <h2 style="font-size:46px">In dollars, not adjectives.</h2>
+    <pre style="margin-top:26px">V_iv  at market implied vol   <span class="c">→ what we get paid</span>
+V_rv  at 20-day realised vol  <span class="c">→ what we think it is worth</span>
+
+spread we <span class="k">SELL</span>:  EV per share = credit − V_rv
+spread we <span class="t">BUY</span> :  EV per share = V_rv − debit
+
+<span class="k">edge_ratio</span> = EV ÷ max_loss    <span class="c">← the ranking statistic</span></pre>
+    <p style="margin-top:22px">Both legs, same measure, same horizon — so the
+      difference <strong>is</strong> the variance premium in dollars. The credit is
+      already haircut for the bid/ask we expect to cross, so the edge is quoted
+      <strong>after</strong> friction.</p>
+    <p class="amber">EV not positive → the structure is never built.</p>
+  </div>
+  <div class="num">05</div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="kicker">The council</div>
+  <div class="body">
+    <table>
+      <thead><tr><th>Agent</th><th>Job</th><th>Can it lose money?</th></tr></thead>
+      <tbody>
+        <tr><td class="n">Analyst</td><td>Regime in ATR units, so SPY and NVDA are
+            comparable. Flags vol shocks.</td><td class="no">no</td></tr>
+        <tr><td class="n">Vol Scout</td><td>The sell / buy / stand-aside verdict,
+            plus a 0–1 confidence.</td><td class="no">no</td></tr>
+        <tr><td class="n">Architect</td><td>Real strikes from the live chain; prices
+            its own EV after friction.</td><td class="no">no</td></tr>
+        <tr><td class="n">Adjudicator <em>(LLM)</em></td><td>Cross-sectional
+            judgement. Veto and size dial only.</td><td class="no">only downward</td></tr>
+        <tr><td class="n">Risk Officer</td><td>24 deterministic gates, sizing, kill
+            switches. Holds the veto.</td><td class="hot">it is what prevents it</td></tr>
+        <tr><td class="n">Position Manager</td><td>Exits. Runs before entries, every
+            cycle.</td><td class="hot">this is where the P&amp;L is</td></tr>
+        <tr><td class="n">Bandit</td><td>Beta posterior per regime × structure →
+            feeds back into size.</td><td class="no">no</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="num">06</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="kicker">What the model is actually for</div>
+  <div class="body">
+    <h2 style="font-size:44px">Arithmetic can't see these three things.</h2>
+    <ul class="plain" style="margin-top:26px">
+      <li>Three of today's candidates are <b>the same index bet in three
+        costumes</b>.</li>
+      <li>A 1.4× premium across <b>every megacap at once</b> is a macro print being
+        priced, not five independent gifts.</li>
+      <li>The book has quietly become <b>one-way short puts</b>.</li>
+    </ul>
+    <p style="margin-top:26px"><strong>Guardrails.</strong> Invented candidate ids
+      are dropped and logged. <strong>Silence is not consent</strong> — a candidate
+      the model doesn't mention is discarded. On failure or unparseable output the
+      desk continues deterministically and journals that it did.</p>
+  </div>
+  <div class="num">07</div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <div class="kicker">One cycle</div>
+  <div class="body">
+    <ol class="cyc">
+      <li><div><b>Intake</b><span>One brief, shared by every agent, journalled
+        verbatim.</span></div></li>
+      <li><div><b>Read</b><span>Analyst forms the regime view; Vol Scout the
+        verdict.</span></div></li>
+      <li class="f"><div><b>Manage — before entries</b><span>Closing a winner
+        returns the risk budget a new entry then uses.</span></div></li>
+      <li><div><b>Portfolio gates</b><span>Kill switches, delta band, buying power,
+        session clock.</span></div></li>
+      <li><div><b>Design</b><span>Real strikes from the live chain; EV priced after
+        friction.</span></div></li>
+      <li><div><b>Adjudicate</b><span>The model may veto and may shrink. Nothing
+        else.</span></div></li>
+      <li><div><b>Review</b><span>Risk Officer gates each survivor and sets the
+        size.</span></div></li>
+      <li><div><b>Execute</b><span>Single <code>mleg</code> orders — then journal
+        everything, refusals included.</span></div></li>
+    </ol>
+    <p style="margin-top:24px" class="amber">A desk that opens before it closes
+      drifts to its position cap and sits there.</p>
+  </div>
+  <div class="num">08</div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <div class="kicker">The gate ledger · a real cycle, verbatim</div>
+  <div class="body">
+    <div class="gates">
+      <div><div class="g"><span class="m">PASS</span><span class="d">market_open — <b>market open</b></span></div>
+      <div class="g"><span class="m">PASS</span><span class="d">account_tradable — <b>ACTIVE</b></span></div>
+      <div class="g"><span class="m">PASS</span><span class="d">options_level — <b>level 3</b></span></div>
+      <div class="g"><span class="m">PASS</span><span class="d">daily_loss_kill — <b>+0.00% vs −2.50%</b></span></div>
+      <div class="g"><span class="m">PASS</span><span class="d">drawdown_kill — <b>+0.00% vs −8.00%</b></span></div></div>
+      <div><div class="g"><span class="m">PASS</span><span class="d">bp_reserve — <b>100%, floor 25%</b></span></div>
+      <div class="g"><span class="m">PASS</span><span class="d">position_count — <b>0 of 6</b></span></div>
+      <div class="g"><span class="m">PASS</span><span class="d">net_delta_band — <b>+0 vs ±150</b></span></div>
+      <div class="g"><span class="m">PASS</span><span class="d">deployed_risk — <b>0.0%, cap 12%</b></span></div>
+      <div class="g"><span class="m">PASS</span><span class="d">time_of_day — <b>180 min left</b></span></div></div>
+    </div>
+    <p style="margin-top:26px;font-size:19px"><strong>Fourteen more per
+      candidate</strong> — and sizing is one of them, not an afterthought:</p>
+    <div class="tags">
+      <span class="tag">positive_expectancy</span><span class="tag">credit_to_width</span>
+      <span class="tag">short_delta_band</span><span class="tag">prob_touch</span>
+      <span class="tag">leg_liquidity</span><span class="tag">per_underlying_cap</span>
+      <span class="tag">earnings_blackout</span><span class="tag">sizing</span>
+    </div>
+    <pre style="margin-top:18px;font-size:17px">qty = floor( min(per_trade_budget, book_headroom) × llm_conviction ÷ max_loss )</pre>
+  </div>
+  <div class="num">09</div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <div class="kicker">Exits get all the money</div>
+  <div class="body">
+    <table>
+      <tbody>
+        <tr><td class="n mono">TIME</td><td>The last quarter of the trade's own
+          life, capped at 7 days. A 32-day spread exits at 7 DTE; a 5-day spread at
+          1. A fixed rule would close a short-dated trade the moment it
+          opened.</td></tr>
+        <tr><td class="n mono">TARGET</td><td>55% of max profit. The last 45% takes
+          most of the remaining time to earn and carries all of the remaining
+          gamma.</td></tr>
+        <tr><td class="n mono">STOP</td><td>2× the credit received, before max
+          loss.</td></tr>
+        <tr><td class="n mono">DEFEND</td><td>Short-strike delta through 0.40 — this
+          is no longer the trade that was approved.</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:28px"><strong>Refusals are decisions too.</strong> Blocked
+      candidates are journalled with the gate that stopped each one and its numbers.
+      A desk that only logs its fills is grading its own homework.</p>
+  </div>
+  <div class="num">10</div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <div class="kicker">Alpaca infrastructure · one intent, three pipes</div>
+  <div class="body">
+    <div class="pipes">
+      <div class="pipe"><div class="pn">Alpaca CLI</div><div class="po">preferred</div>
+        <p>JSON on stdout. Subcommands <em>probed</em> with <code>--help</code>, not
+        assumed. The exact argv is journalled — replay any decision by hand.</p></div>
+      <div class="pipe"><div class="pn">Alpaca MCP</div><div class="po">72 tools discovered</div>
+        <p>stdio JSON-RPC. Reads <code>tools/list</code> and every tool's JSON
+        schema, then binds intents to what the server actually offers. Late binding,
+        not baked.</p></div>
+      <div class="pipe f"><div class="pn">REST</div><div class="po">guaranteed floor</div>
+        <p>stdlib <code>urllib</code>. So the desk never stalls because a binary is
+        missing on someone else's machine.</p></div>
+    </div>
+    <ul class="plain" style="margin-top:26px">
+      <li><b>Spreads go over the CLI, not just REST.</b> <code>alpaca order
+        submit --order-class mleg --legs '[…]'</code> — and <code>--symbol</code> /
+        <code>--side</code> must be omitted for mleg, because they're per-leg.</li>
+      <li><b>Credits are negative.</b> The convention has shifted between releases,
+        so the first credit order is sent with the documented sign and, on a price
+        rejection, retried once flipped — then remembered and logged.</li>
+    </ul>
+    <p style="margin-top:20px" class="amber">Every call records which pipe served it.
+      “We used MCP and the CLI” is a table in the journal, not a claim in a README.</p>
+  </div>
+  <div class="num">11</div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <div class="kicker">Run it yourself</div>
+  <div class="body">
+    <pre>python -m council once --mock     <span class="c"># whole pipeline, offline, no keys, ~2s</span>
+python -m council mcp-doctor      <span class="c"># the discovered MCP tool map</span>
+python -m council preflight       <span class="c"># account, level, balance, feeds, pipes</span>
+python -m council loop            <span class="c"># trade the session</span>
+python -m council dashboard       <span class="c"># http://127.0.0.1:8787</span>
+python -m unittest discover -s tests   <span class="c"># 52 tests</span></pre>
+    <div class="chips" style="margin-top:34px">
+      <span class="chip">github.com/adeelsaleem844/<b>Theta-Council</b></span>
+      <span class="chip">paper <b>PA3YGPXXKC9E</b></span>
+      <span class="chip on">MIT</span>
+    </div>
+    <p style="margin-top:30px;font-size:23px" class="amber">Five agents. One veto.
+      A full audit trail.</p>
+  </div>
+  <div class="disc">Paper trading only. Paper results are hypothetical, involve no
+    real funds, and do not represent actual trading or guarantee future results.
+    Nothing here is investment advice. Options trading is not suitable for all
+    investors and certain complex strategies carry additional risk — see the OCC's
+    Characteristics and Risks of Standardized Options. Figures shown come from an
+    offline simulation and are not a performance claim.</div>
+  <div class="num">12</div>
+</section>
+
+</body></html>
