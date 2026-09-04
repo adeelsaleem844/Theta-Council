@@ -162,8 +162,16 @@ PA3YGPXXKC9E
 
 ## Video presentation
 
-`docs/VIDEO.md` has the full 3-minute script with timings and exact commands.
-NOT YET RECORDED — this is the one deliverable that needs your voice.
+`assets/Theta-Council-demo.mp4` — 3m42s, 1920x1080, captioned. Ready to upload.
+
+Every frame is rendered from HTML by headless Chrome and the terminal output is
+captured from real runs, so there is no screen recording and no voiceover — the
+narration is burned in as on-screen captions. Rebuild after any edit:
+
+    python assets/video/build.py          # frames + encode
+
+If you would rather narrate it yourself, `docs/VIDEO.md` has the same script
+with timings, and the captions match it line for line.
 
 ## Slide presentation
 
@@ -220,6 +228,7 @@ Drafts in `SOCIAL.md`. Tag **@lablabai** and **@AlpacaHQ** on X, and
 - [x] Repo pushed — https://github.com/adeelsaleem844/Theta-Council  (confirm it is set to Public in repo Settings)
 - [x] Cover image built — `assets/cover.png`
 - [ ] Cover image uploaded to the form
+- [x] Video built — `assets/Theta-Council-demo.mp4` (3m42s, captioned)
 - [ ] Video uploaded and linked
 - [x] Slides built — `assets/Theta-Council-slides.pdf`
 - [ ] Slides uploaded to the form

@@ -1,0 +1,107 @@
+01:10:17 INFO  transport ready  pipe=mock
+
+-- cycle c-20260904T011017-8209dd ------------------------------------
+01:10:17 INFO  intake SPY  spot=642 rv=14 iv=16.6 vrp=1.19 liquid=518
+01:10:18 INFO  intake QQQ  spot=573 rv=14.5 iv=21.8 vrp=1.5 liquid=506
+01:10:18 INFO  intake IWM  spot=233 rv=21.4 iv=25.7 vrp=1.2 liquid=626
+01:10:18 INFO  intake AAPL  spot=238 rv=23.7 iv=30.7 vrp=1.29 liquid=665
+01:10:19 INFO  intake MSFT  spot=512 rv=25.2 iv=28.2 vrp=1.12 liquid=578
+01:10:19 INFO  intake NVDA  spot=178 rv=33.8 iv=53.8 vrp=1.59 liquid=535
+01:10:19 INFO  intake AMD  spot=164 rv=58.1 iv=57.6 vrp=0.99 liquid=506
+01:10:19 INFO  intake META  spot=748 rv=30.3 iv=39.6 vrp=1.31 liquid=644
+01:10:20 INFO  intake GOOGL  spot=213 rv=24.8 iv=34.6 vrp=1.4 liquid=605
+01:10:20 INFO  intake AMZN  spot=232 rv=30.1 iv=37.1 vrp=1.23 liquid=686
+01:10:20 INFO  designed candidates  n=16
+01:10:21 INFO  SEND NVDA iron condor -208C/+210C/+150P/-152P  qty=11 net=-0.44 dte=30 ev=24.74
+01:10:21 INFO  mock fill  order=mock-0001 net=-0.44 qty=11
+01:10:21 INFO  credit sign convention confirmed  sign=-1
+01:10:21 INFO  blocked NVDA iron condor  why=2 open in NVDA, cap 2
+01:10:21 INFO  SEND GOOGL iron condor -222C/+224C/+202P/-204P  qty=10 net=-0.45 dte=5 ev=23.48
+01:10:21 INFO  mock fill  order=mock-0002 net=-0.45 qty=10
+01:10:21 INFO  SEND AAPL iron condor -246C/+248C/+228P/-230P  qty=10 net=-0.55 dte=5 ev=20.04
+01:10:21 INFO  mock fill  order=mock-0003 net=-0.55 qty=10
+
+-- desk state --------------------------------------------------------
+  equity            $100,000.00
+  market            OPEN
+  house view        bull
+  posture           normal  (deterministic mode (FEATHERLESS_API_KEY not set))
+  adjudicator       deterministic (no LLM)
+
+-- symbol reads ------------------------------------------------------
+  sym   regime      trend      IV      RV    VRP  rank  edge
+  SPY   bull        +0.74   16.6%   14.0%   1.19    50  sell
+  QQQ   bear        -0.53   21.8%   14.5%   1.50    50  sell
+  IWM   bull        +0.58   25.7%   21.4%   1.20    50  sell
+  AAPL  chop        -0.08   30.7%   23.7%   1.29    50  sell
+  MSFT  volatile    +0.19   28.2%   25.2%   1.12    50  none
+  NVDA  chop        -0.12   53.8%   33.8%   1.59    50  sell
+  AMD   volatile    +0.63   57.6%   58.1%   0.99    50  none
+  META  bull        +0.75   39.6%   30.3%   1.31    50  sell
+  GOOGL chop        +0.01   34.6%   24.8%   1.40    50  sell
+  AMZN  bull        +1.00   37.1%   30.1%   1.23    50  sell
+
+-- risk officer - portfolio gates ------------------------------------
+  [PASS] market_open: market open
+  [PASS] account_tradable: status=ACTIVE
+  [PASS] options_level: level 3 (need 3 for multi-leg spreads)
+  [PASS] daily_loss_kill: day P&L +0.00% vs limit -2.50%
+  [PASS] drawdown_kill: drawdown +0.00% from peak $100,000 vs limit -8.00%
+  [PASS] bp_reserve: options BP $100,000 = 100% of equity, floor 25%
+  [PASS] position_count: 0 open structures, cap 6
+  [PASS] net_delta_band: net delta +0 vs band +/-150
+  [PASS] deployed_risk: 0.0% of equity at risk, cap 12%
+  [PASS] time_of_day: 180 min of session left
+
+-- candidates (16) ---------------------------------------------------
+  NVDA-IC-30d-2026-10-04     -208C/+210C/+150P/-152P     30d net  0.44 risk $    156 EV $    +25 edge +15.8% pop   90% score 0.80 conv 0.87
+  NVDA-IC-5d-2026-09-09      -190C/+192C/+166P/-168P      5d net  0.52 risk $    148 EV $    +33 edge +22.4% pop   88% score 0.80 conv 0.87
+  GOOGL-IC-5d-2026-09-09     -222C/+224C/+202P/-204P      5d net  0.45 risk $    155 EV $    +23 edge +15.2% pop   86% score 0.75 conv 0.84
+  AAPL-IC-5d-2026-09-09      -246C/+248C/+228P/-230P      5d net  0.55 risk $    145 EV $    +20 edge +13.8% pop   79% score 0.69 conv 0.80
+  GOOGL-IC-30d-2026-10-04    -236C/+238C/+192P/-194P     30d net  0.48 risk $    152 EV $    +19 edge +12.3% pop   84% score 0.68 conv 0.79
+  QQQ-BCS-30d-2026-10-04     -606C/+612C                 30d net  0.93 risk $    507 EV $    +44 edge  +8.8% pop   90% score 0.68 conv 0.79
+  QQQ-BCS-5d-2026-09-09      -588C/+594C                  5d net  0.66 risk $    534 EV $    +43 edge  +8.1% pop   93% score 0.65 conv 0.77
+  META-BPS-5d-2026-09-09     +714P/-721P                  5d net  1.20 risk $    580 EV $    +36 edge  +6.1% pop   85% score 0.55 conv 0.71
+  AAPL-IC-30d-2026-10-04     -260C/+262C/+216P/-218P     30d net  0.48 risk $    152 EV $    +13 edge  +8.5% pop   81% score 0.53 conv 0.69
+  AMZN-BPS-5d-2026-09-09     +222P/-224P                  5d net  0.33 risk $    167 EV $     +6 edge  +3.9% pop   84% score 0.50 conv 0.67
+
+-- refused (13) ------------------------------------------------------
+  NVDA-IC-5d-2026-09-09      per_underlying_cap
+    -> 2 open in NVDA, cap 2
+  GOOGL-IC-30d-2026-10-04    n/a
+    -> cycle entry cap reached
+  QQQ-BCS-30d-2026-10-04     n/a
+    -> cycle entry cap reached
+  QQQ-BCS-5d-2026-09-09      n/a
+    -> cycle entry cap reached
+  META-BPS-5d-2026-09-09     n/a
+    -> cycle entry cap reached
+  AAPL-IC-30d-2026-10-04     n/a
+    -> cycle entry cap reached
+  AMZN-BPS-5d-2026-09-09     n/a
+    -> cycle entry cap reached
+  META-BPS-30d-2026-10-04    n/a
+    -> cycle entry cap reached
+  SPY-BPS-30d-2026-10-04     n/a
+    -> cycle entry cap reached
+  SPY-BPS-5d-2026-09-09      n/a
+    -> cycle entry cap reached
+
+-- orders sent (3) ---------------------------------------------------
+  NVDA iron condor               -208C/+210C/+150P/-152P    x11 @ -0.44  risk $1,722 EV $+272  filled
+  GOOGL iron condor              -222C/+224C/+202P/-204P    x10 @ -0.45  risk $1,550 EV $+235  filled
+  AAPL iron condor               -246C/+248C/+228P/-230P    x10 @ -0.55  risk $1,450 EV $+200  filled
+
+-- Alpaca transport provenance ---------------------------------------
+  pipes available : mock
+  clock             mockx1
+  account           mockx1
+  positions         mockx1
+  submit_order      mockx3
+  stock_bars        mockx10
+  option_chain      mockx10
+  calls served    : mock=26
+
+-- running totals ----------------------------------------------------
+  cycles 1   closed 0   win rate 0.0%   realised P&L $+0.00
+  open structures 3   capital at risk $4,722   refusals logged 13

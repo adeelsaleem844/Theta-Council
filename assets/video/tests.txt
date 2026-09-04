@@ -1,0 +1,33 @@
+E...................
+======================================================================
+ERROR: test_desk (unittest.loader._FailedTest.test_desk)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_desk
+Traceback (most recent call last):
+  File "C:\Users\ads\AppData\Local\Programs\Python\Python312\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ads\AppData\Local\Programs\Python\Python312\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\ads\Downloads\theta-council\tests\test_desk.py", line 15, in <module>
+    from council import orders                                  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ads\Downloads\theta-council\council\orders.py", line 19, in <module>
+    from .transports import SUBMIT_ORDER, TransportError
+  File "C:\Users\ads\Downloads\theta-council\council\transports\__init__.py", line 6, in <module>
+    from .router import Router
+  File "C:\Users\ads\Downloads\theta-council\council\transports\router.py", line 17, in <module>
+    from .mock import MockTransport
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1091, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1191, in get_data
+MemoryError
+
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.127s
+
+FAILED (errors=1)

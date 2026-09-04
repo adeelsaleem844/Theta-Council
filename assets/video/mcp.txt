@@ -1,0 +1,56 @@
+
+-- Alpaca MCP server -------------------------------------------------
+  launch command    C:/Users/ads/AppData/Local/Microsoft/WinGet/Packages/astral-sh.uv_Microsoft.Winget.Source_8wekyb3d8bbwe/uv tool run alpaca-mcp-server
+00:01:10 INFO  mcp connected  tools=72 bound=11
+  status            connected
+  tools advertised  72
+
+-- intent bindings discovered at runtime -----------------------------
+  account           -> get_account_info
+                       args: (no schema)
+  calendar          -> get_calendar
+                       args: date_type, end, start
+  cancel_order      -> cancel_order_by_id
+                       args: order_id
+  clock             -> get_clock
+                       args: (no schema)
+  close_position    -> close_position
+                       args: percentage, qty, symbol_or_asset_id
+  option_chain      -> get_option_chain
+                       args: expiration_date, expiration_date_gte, expiration_date_lte, feed, limit, page_token, root_symbol, strike_price_gte
+  option_contracts  -> get_option_contracts
+                       args: expiration_date, expiration_date_gte, expiration_date_lte, limit, page_token, ppind, root_symbol, show_deliverables
+  orders            -> get_orders
+                       args: after, after_order_id, asset_class, before_order_id, direction, limit, nested, side
+  positions         -> get_all_positions
+                       args: (no schema)
+  stock_bars        -> get_stock_bars
+                       args: adjustment, asof, currency, days, end, feed, hours, limit
+  submit_order      -> place_option_order
+                       args: client_order_id, legs, limit_price, order_class, position_intent, qty, side, symbol
+
+-- all advertised tools ----------------------------------------------
+  add_asset_to_watchlist_by_id      cancel_all_orders                 cancel_order_by_id                
+  close_all_positions               close_position                    create_locate                     
+  create_watchlist                  delete_watchlist_by_id            do_not_exercise_options_position  
+  exercise_options_position         fetch_alpaca_doc                  get_account_activities            
+  get_account_activities_by_type    get_account_config                get_account_info                  
+  get_all_assets                    get_all_positions                 get_alpaca_endpoint_docs          
+  get_asset                         get_calendar                      get_clock                         
+  get_corporate_action_announcement get_corporate_action_announcementsget_corporate_actions             
+  get_crypto_bars                   get_crypto_latest_bar             get_crypto_latest_orderbook       
+  get_crypto_latest_quote           get_crypto_latest_trade           get_crypto_quotes                 
+  get_crypto_snapshot               get_crypto_trades                 get_fixed_income_latest_quotes    
+  get_locate                        get_locate_quotes                 get_locates                       
+  get_market_movers                 get_most_active_stocks            get_news                          
+  get_open_position                 get_option_bars                   get_option_chain                  
+  get_option_contract               get_option_contracts              get_option_exchange_codes         
+  get_option_latest_quote           get_option_latest_trade           get_option_snapshot               
+  get_option_trades                 get_order_by_client_id            get_order_by_id                   
+  get_orders                        get_portfolio_history             get_stock_bars                    
+  get_stock_latest_bar              get_stock_latest_quote            get_stock_latest_trade            
+  get_stock_quotes                  get_stock_snapshot                get_stock_trades                  
+  get_watchlist_by_id               get_watchlists                    list_alpaca_api_endpoints         
+  place_crypto_order                place_option_order                place_stock_order                 
+  remove_asset_from_watchlist_by_id replace_order_by_id               search_alpaca_api_specs           
+  search_alpaca_docs                update_account_config             update_watchlist_by_id            
