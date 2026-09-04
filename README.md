@@ -7,7 +7,7 @@ Paper trading only.
 
 ![Theta Council](assets/cover.png)
 
-**[Project page →](https://claude.ai/code/artifact/2b49dc51-935a-41ea-b2cb-570f953be199)** · [One-page write-up](WRITEUP.md) · [Verified Alpaca surface](docs/MCP_DISCOVERY.md)
+**[Project page →](https://adeelsaleem844.github.io/Theta-Council/)** · [One-page write-up](WRITEUP.md) · [Verified Alpaca surface](docs/MCP_DISCOVERY.md)
 
 ```bash
 python -m council once --mock      # full pipeline, offline, no API keys, ~2 seconds

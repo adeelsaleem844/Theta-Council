@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theta Council</title>
+<meta name="description" content="An autonomous options desk on Alpaca. Five agents, one veto, a full audit trail. Built for the Alpaca AI Trading Agents Hackathon.">
+<meta property="og:title" content="Theta Council">
+<meta property="og:description" content="An autonomous options desk on Alpaca where the LLM holds a veto and a size dial, never the wheel.">
+<meta property="og:image" content="https://adeelsaleem844.github.io/Theta-Council/cover.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#9878;</text></svg>">
+<style>
+  :root{ color-scheme: light dark }
+  html{ -webkit-text-size-adjust:100% }
+  body{ margin:0 }
+  img{ max-width:100% }
+  [hidden]{ display:none !important }
+</style>
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    /* Light: a broker statement on cool stock, not warm cream. */
+    --ground:#eef1f6;
+    --sheet:#ffffff;
+    --sheet-2:#f5f7fb;
+    --rule:#c9d2e0;
+    --rule-soft:#dfe5ef;
+    --ink:#131a26;
+    --ink-2:#455163;
+    --ink-3:#6b788c;
+    --amber:#a86a11;        /* short premium — the desk's default posture */
+    --amber-fill:#e8a33d;
+    --teal:#1f6f65;         /* long premium */
+    --teal-fill:#3f9c8f;
+    --rust:#a3402c;         /* blocked */
+    --rust-soft:#f4e2de;
+    --pass-soft:#dceee9;
+    --band:#e3e8f1;         /* the no-trade band */
+    --shadow:0 1px 2px rgba(19,26,38,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#080d16;
+      --sheet:#101827;
+      --sheet-2:#16202f;
+      --rule:#2a3646;
+      --rule-soft:#1d2836;
+      --ink:#e5ebf4;
+      --ink-2:#a4b1c4;
+      --ink-3:#75839a;
+      --amber:#e8a33d;
+      --amber-fill:#e8a33d;
+      --teal:#4fb3a3;
+      --teal-fill:#3f9c8f;
+      --rust:#e08472;
+      --rust-soft:#2e1a17;
+      --pass-soft:#142a26;
+      --band:#18222f;
+      --shadow:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#080d16; --sheet:#101827; --sheet-2:#16202f;
+    --rule:#2a3646; --rule-soft:#1d2836;
+    --ink:#e5ebf4; --ink-2:#a4b1c4; --ink-3:#75839a;
+    --amber:#e8a33d; --amber-fill:#e8a33d;
+    --teal:#4fb3a3; --teal-fill:#3f9c8f;
+    --rust:#e08472; --rust-soft:#2e1a17;
+    --pass-soft:#142a26; --band:#18222f; --shadow:none;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font:16px/1.62 "IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px 72px}
+
+  /* ── masthead: a statement header ───────────────────────────────── */
+  .masthead{
+    border-bottom:2px solid var(--ink); margin-bottom:34px;
+    padding:38px 0 16px;
+  }
+  .eyebrow{
+    font:500 11px/1 "IBM Plex Mono",monospace; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-3);
+  }
+  h1{
+    font:400 clamp(38px,7vw,62px)/1.02 Newsreader,Georgia,serif;
+    margin:14px 0 6px; letter-spacing:-.015em; text-wrap:balance;
+  }
+  .standfirst{
+    font:400 clamp(17px,2.2vw,20px)/1.5 Newsreader,Georgia,serif;
+    color:var(--ink-2); max-width:34em; margin:0 0 22px;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{
+    font:400 11.5px/1 "IBM Plex Mono",monospace; letter-spacing:.02em;
+    padding:6px 9px; border:1px solid var(--rule); border-radius:3px;
+    color:var(--ink-2); background:var(--sheet);
+  }
+  .chip b{color:var(--ink);font-weight:500}
+  .chip.on{border-color:var(--teal);color:var(--teal);background:var(--pass-soft)}
+
+  /* ── structure ──────────────────────────────────────────────────── */
+  section{margin:0 0 46px}
+  h2{
+    font:500 13px/1 "IBM Plex Mono",monospace; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--ink-3);
+    margin:0 0 18px; padding-bottom:9px; border-bottom:1px solid var(--rule-soft);
+  }
+  h3{font:500 17px/1.35 "IBM Plex Sans",sans-serif;margin:26px 0 8px}
+  p{margin:0 0 14px;max-width:66ch;color:var(--ink-2)}
+  p strong{color:var(--ink);font-weight:600}
+  .lede{font:400 20px/1.55 Newsreader,Georgia,serif;color:var(--ink);max-width:32em}
+
+  blockquote{
+    margin:26px 0; padding:0 0 0 20px; border-left:3px solid var(--amber-fill);
+    font:400 italic clamp(20px,3vw,26px)/1.38 Newsreader,Georgia,serif;
+    color:var(--ink); max-width:26em;
+  }
+
+  .formula{
+    font:400 14px/1.85 "IBM Plex Mono",monospace; color:var(--ink);
+    background:var(--sheet); border:1px solid var(--rule-soft);
+    border-radius:4px; padding:16px 18px; margin:18px 0;
+    overflow-x:auto; white-space:pre;
+  }
+  .formula .k{color:var(--amber)}
+  .formula .c{color:var(--ink-3)}
+
+  figure{margin:22px 0 0}
+  figcaption{
+    font:400 12.5px/1.55 "IBM Plex Mono",monospace; color:var(--ink-3);
+    margin-top:12px; max-width:70ch;
+  }
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0 0}
+  .lg{font:400 12px/1 "IBM Plex Mono",monospace;color:var(--ink-2);
+      display:flex;align-items:center;gap:6px}
+  .sw{width:11px;height:11px;border-radius:2px;display:inline-block}
+
+  /* ── the cycle: a real ordered sequence, so it is numbered ──────── */
+  ol.cycle{list-style:none;margin:0;padding:0;counter-reset:step}
+  ol.cycle li{
+    counter-increment:step; display:grid;
+    grid-template-columns:34px 1fr; gap:14px;
+    padding:13px 0; border-bottom:1px solid var(--rule-soft);
+  }
+  ol.cycle li:last-child{border-bottom:0}
+  ol.cycle li::before{
+    content:counter(step,decimal-leading-zero);
+    font:500 12px/1.7 "IBM Plex Mono",monospace; color:var(--ink-3);
+  }
+  ol.cycle .what{font-weight:600;color:var(--ink)}
+  ol.cycle .why{color:var(--ink-2);font-size:15px}
+  ol.cycle li.hot::before{color:var(--amber)}
+  ol.cycle li.hot .what{color:var(--amber)}
+
+  /* ── tables ─────────────────────────────────────────────────────── */
+  .scroll{overflow-x:auto;margin:18px 0 0}
+  table{border-collapse:collapse;width:100%;font-size:14.5px}
+  th{
+    text-align:left; font:500 11px/1 "IBM Plex Mono",monospace;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+    padding:0 14px 9px 0; border-bottom:1px solid var(--rule);
+  }
+  td{padding:11px 14px 11px 0;border-bottom:1px solid var(--rule-soft);
+     vertical-align:top;color:var(--ink-2)}
+  td.name{color:var(--ink);font-weight:600;white-space:nowrap}
+  td.mono,th.mono{font-family:"IBM Plex Mono",monospace;font-size:13px;
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  .no{color:var(--ink-3);font-style:italic}
+  .yes{color:var(--amber);font-weight:500}
+
+  /* ── gate ledger ────────────────────────────────────────────────── */
+  .gates{display:grid;gap:1px;background:var(--rule-soft);
+         border:1px solid var(--rule-soft);border-radius:4px;overflow:hidden}
+  .gate{display:grid;grid-template-columns:26px 190px 1fr;gap:12px;
+        align-items:baseline;padding:10px 14px;background:var(--sheet)}
+  .gate .mark{font:500 10px/1.7 "IBM Plex Mono",monospace;letter-spacing:.06em}
+  .gate.p .mark{color:var(--teal)}
+  .gate.b .mark{color:var(--rust)}
+  .gate .gname{font:400 13px/1.7 "IBM Plex Mono",monospace;color:var(--ink)}
+  .gate .gdet{font:400 13px/1.7 "IBM Plex Mono",monospace;color:var(--ink-3);
+              font-variant-numeric:tabular-nums}
+  .gate.b{background:var(--rust-soft)}
+  @media(max-width:640px){
+    .gate{grid-template-columns:26px 1fr}
+    .gate .gdet{grid-column:2}
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 0}
+  .tag{font:400 12px/1 "IBM Plex Mono",monospace;padding:5px 8px;
+       border:1px solid var(--rule);border-radius:3px;color:var(--ink-2);
+       background:var(--sheet)}
+
+  /* ── pipes ──────────────────────────────────────────────────────── */
+  .pipes{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+         margin:18px 0 0}
+  .pipe{border:1px solid var(--rule-soft);border-radius:4px;
+        background:var(--sheet);padding:16px 17px;box-shadow:var(--shadow)}
+  .pipe .pn{font:500 13px/1 "IBM Plex Mono",monospace;color:var(--ink);
+            margin-bottom:4px}
+  .pipe .po{font:400 11px/1 "IBM Plex Mono",monospace;color:var(--amber);
+            letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  .pipe p{font-size:14px;margin:0;color:var(--ink-2)}
+  .pipe.floor .po{color:var(--ink-3)}
+
+  ul.plain{margin:0;padding:0;list-style:none}
+  ul.plain li{padding:11px 0;border-bottom:1px solid var(--rule-soft);
+              color:var(--ink-2);max-width:70ch;font-size:15px}
+  ul.plain li:last-child{border-bottom:0}
+  ul.plain b{color:var(--ink)}
+
+  code{font:400 13.5px "IBM Plex Mono",monospace;color:var(--ink);
+       background:var(--sheet-2);padding:1px 5px;border-radius:3px}
+
+  footer{border-top:1px solid var(--rule);margin-top:14px;padding-top:20px;
+         font:400 12.5px/1.65 "IBM Plex Sans",sans-serif;color:var(--ink-3);
+         max-width:74ch}
+  footer a{color:var(--ink-2)}
+  ::selection{background:var(--amber-fill);color:#131a26}
+  :focus-visible{outline:2px solid var(--amber-fill);outline-offset:2px}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Alpaca AI Trading Agents Hackathon · lablab.ai × Alpaca</div>
+  <h1>Theta Council</h1>
+  <p class="standfirst">An autonomous options desk on Alpaca. Five agents, one veto,
+     a full audit trail.</p>
+  <div class="chips">
+    <span class="chip">paper account <b>PA3YGPXXKC9E</b></span>
+    <span class="chip">start <b>$100,000</b></span>
+    <span class="chip on">options level 3</span>
+    <span class="chip">pipes <b>cli → mcp → rest</b></span>
+    <span class="chip">dependencies <b>0</b></span>
+  </div>
+</header>
+
+<section>
+  <p class="lede">Most “AI trading agent” projects hand a language model an order
+  endpoint and a prompt that says <em>be careful</em>. That is a nice demo and a
+  bad trading desk.</p>
+  <p>Models are excellent at reading context across a dozen instruments at once,
+  and unreliable about position size on the fortieth API call of the session. So
+  this architecture inverts the usual arrangement.</p>
+  <blockquote>The language model has a veto and a dial. It never has the wheel.</blockquote>
+  <p>It can reject any trade and shrink any position. It cannot invent a strike,
+  raise a quantity, widen a risk limit, or reach an order endpoint. Everything
+  that could actually hurt the account is enforced afterwards, in deterministic
+  Python, by an agent that does not read prompts.</p>
+</section>
+
+<section>
+  <h2>The edge</h2>
+  <p>Selling an option is selling a forecast of movement. The market prices that
+  forecast at <strong>implied volatility</strong>; the underlying then delivers
+  <strong>realised volatility</strong>. Across liquid US equity and index options
+  the first is, on average, larger than the second. That gap — the
+  <strong>variance risk premium</strong> — is not a directional prediction. It is
+  a fee, paid to whoever is willing to carry the gamma risk.</p>
+
+  <div class="formula"><span class="c"># measured every cycle, per symbol</span>
+vrp_ratio = ATM implied volatility ÷ 20-day realised volatility
+
+  <span class="k">≥ 1.12</span>  the market overpays for movement   <span class="c">→ SELL defined-risk premium</span>
+  <span class="k">≤ 0.98</span>  movement is cheap                  <span class="c">→ BUY  defined-risk premium</span>
+ between  <span class="c">→ NO TRADE</span></div>
+
+  <p>That third branch is where a real desk spends most of its life, and it is
+  the branch nobody demos. An agent that trades every time you run it is not
+  finding edges, it is finding excuses.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 400" width="100%" role="img"
+         aria-label="Variance risk premium ratio by symbol, with the no-trade band between 0.98 and 1.12 marked. NVDA 1.59, QQQ 1.50, GOOGL 1.40, META 1.31, AAPL 1.29, AMZN 1.23, IWM 1.20, SPY 1.19 all sell premium; MSFT 1.12 and AMD 0.99 do not trade.">
+      <!-- no-trade band -->
+      <rect x="132" y="50" width="108.5" height="300" fill="var(--band)"></rect>
+      <text x="186" y="42" text-anchor="middle" fill="var(--ink-3)"
+            font-family="IBM Plex Mono, monospace" font-size="10.5"
+            letter-spacing="1">NO-TRADE BAND</text>
+
+      <!-- axis -->
+      <line x1="70" y1="50" x2="690" y2="50" stroke="var(--rule)" stroke-width="1"></line>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink-3)"
+         text-anchor="middle">
+        <text x="70"  y="368">0.90</text>
+        <text x="147.5" y="368">1.00</text>
+        <text x="225" y="368">1.10</text>
+        <text x="302.5" y="368">1.20</text>
+        <text x="380" y="368">1.30</text>
+        <text x="457.5" y="368">1.40</text>
+        <text x="535" y="368">1.50</text>
+        <text x="612.5" y="368">1.60</text>
+        <text x="690" y="368">1.70</text>
+      </g>
+      <line x1="70" y1="350" x2="690" y2="350" stroke="var(--rule)" stroke-width="1"></line>
+      <text x="380" y="392" text-anchor="middle" fill="var(--ink-3)"
+            font-family="IBM Plex Mono, monospace" font-size="10.5"
+            letter-spacing="1">IMPLIED ÷ REALISED VOLATILITY</text>
+
+      <!-- threshold rules -->
+      <line x1="132" y1="50" x2="132" y2="350" stroke="var(--teal-fill)"
+            stroke-width="1" stroke-dasharray="3 3"></line>
+      <line x1="240.5" y1="50" x2="240.5" y2="350" stroke="var(--amber-fill)"
+            stroke-width="1" stroke-dasharray="3 3"></line>
+
+      <!-- rows: bar length is proportional to (ratio - 0.90) -->
+      <g font-family="IBM Plex Mono, monospace" font-size="12.5"
+         font-variant-numeric="tabular-nums">
+        <!-- NVDA 1.59 -->
+        <text x="60" y="70" text-anchor="end" fill="var(--ink)">NVDA</text>
+        <rect x="70" y="59" width="534.75" height="15" fill="var(--amber-fill)" rx="1"></rect>
+        <text x="612" y="70" fill="var(--ink-2)">1.59</text>
+        <!-- QQQ 1.50 -->
+        <text x="60" y="100" text-anchor="end" fill="var(--ink)">QQQ</text>
+        <rect x="70" y="89" width="465" height="15" fill="var(--amber-fill)" rx="1"></rect>
+        <text x="543" y="100" fill="var(--ink-2)">1.50</text>
+        <!-- GOOGL 1.40 -->
+        <text x="60" y="130" text-anchor="end" fill="var(--ink)">GOOGL</text>
+        <rect x="70" y="119" width="387.5" height="15" fill="var(--amber-fill)" rx="1"></rect>
+        <text x="466" y="130" fill="var(--ink-2)">1.40</text>
+        <!-- META 1.31 -->
+        <text x="60" y="160" text-anchor="end" fill="var(--ink)">META</text>
+        <rect x="70" y="149" width="317.75" height="15" fill="var(--amber-fill)" rx="1"></rect>
+        <text x="396" y="160" fill="var(--ink-2)">1.31</text>
+        <!-- AAPL 1.29 -->
+        <text x="60" y="190" text-anchor="end" fill="var(--ink)">AAPL</text>
+        <rect x="70" y="179" width="302.25" height="15" fill="var(--amber-fill)" rx="1"></rect>
+        <text x="381" y="190" fill="var(--ink-2)">1.29</text>
+        <!-- AMZN 1.23 -->
+        <text x="60" y="220" text-anchor="end" fill="var(--ink)">AMZN</text>
+        <rect x="70" y="209" width="255.75" height="15" fill="var(--amber-fill)" rx="1"></rect>
+        <text x="334" y="220" fill="var(--ink-2)">1.23</text>
+        <!-- IWM 1.20 -->
+        <text x="60" y="250" text-anchor="end" fill="var(--ink)">IWM</text>
+        <rect x="70" y="239" width="232.5" height="15" fill="var(--amber-fill)" rx="1"></rect>
+        <text x="311" y="250" fill="var(--ink-2)">1.20</text>
+        <!-- SPY 1.19 -->
+        <text x="60" y="280" text-anchor="end" fill="var(--ink)">SPY</text>
+        <rect x="70" y="269" width="224.75" height="15" fill="var(--amber-fill)" rx="1"></rect>
+        <text x="303" y="280" fill="var(--ink-2)">1.19</text>
+        <!-- MSFT 1.12 - stood down on a vol shock -->
+        <text x="60" y="310" text-anchor="end" fill="var(--ink-3)">MSFT</text>
+        <rect x="70" y="299" width="170.5" height="15" fill="var(--rule)" rx="1"></rect>
+        <text x="249" y="310" fill="var(--ink-3)">1.12  vol shock</text>
+        <!-- AMD 0.99 - inside the band -->
+        <text x="60" y="340" text-anchor="end" fill="var(--ink-3)">AMD</text>
+        <rect x="70" y="329" width="69.75" height="15" fill="var(--rule)" rx="1"></rect>
+        <text x="148" y="340" fill="var(--ink-3)">0.99  in band</text>
+      </g>
+    </svg>
+    <div class="legend">
+      <span class="lg"><span class="sw" style="background:var(--amber-fill)"></span>sell premium</span>
+      <span class="lg"><span class="sw" style="background:var(--teal-fill)"></span>buy premium — not triggered in this run</span>
+      <span class="lg"><span class="sw" style="background:var(--rule)"></span>no trade</span>
+    </div>
+    <figcaption>One cycle of the ten-symbol universe, from the offline
+    simulation (<code>once --mock</code>) — not live market data, and not a P&amp;L
+    claim. AMD sits inside the no-trade band. MSFT clears the sell threshold on
+    premium alone but its realised vol has spiked, and the desk never sells fresh
+    gamma into a vol shock, so it stands down anyway.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Pricing the edge in dollars</h2>
+  <p>“Vol looks high” is not a trade. Any vertical spread has a model value, so
+  price it twice — once at the market's implied volatility, which is what we get
+  paid, and once at the underlying's realised volatility, which is what we think
+  it is worth.</p>
+
+  <div class="formula"><span class="c"># both legs, same measure, same horizon</span>
+V_iv  at market implied vol   <span class="c">→ what we get paid</span>
+V_rv  at 20-day realised vol  <span class="c">→ what we think it is worth</span>
+
+spread we <span class="k">SELL</span>:  EV per share = credit − V_rv
+spread we <span class="k">BUY</span> :  EV per share = V_rv − debit
+
+<span class="k">edge_ratio</span> = EV ÷ max_loss   <span class="c">← the ranking statistic</span></div>
+
+  <p>Because both legs are valued under the same measure over the same horizon,
+  the difference is not a directional bet — it is the variance risk premium
+  expressed in dollars. The credit is already haircut for the bid/ask we expect
+  to cross, so the edge is quoted <strong>after</strong> friction rather than
+  before it. If that number is not positive, the Architect never builds the
+  structure, and the Risk Officer would block it if it did.</p>
+</section>
+
+<section>
+  <h2>One cycle</h2>
+  <ol class="cycle">
+    <li><div><div class="what">Intake</div><div class="why">One market brief,
+        shared by every agent and journalled verbatim, so a decision is
+        reproducible from the record.</div></div></li>
+    <li><div><div class="what">Read</div><div class="why">Analyst forms a regime
+        view in ATR units, so SPY and NVDA are comparable. Vol Scout issues the
+        sell / buy / stand-aside verdict.</div></div></li>
+    <li class="hot"><div><div class="what">Manage — before entries, always</div>
+        <div class="why">Closing a winner returns risk budget and buying power
+        that a new entry can then use. A desk that opens before it closes drifts
+        to its position cap and sits there.</div></div></li>
+    <li><div><div class="what">Portfolio gates</div><div class="why">Kill
+        switches, delta band, buying-power reserve, session clock. Any failure
+        stands the whole desk down.</div></div></li>
+    <li><div><div class="what">Design</div><div class="why">Architect pulls real
+        strikes from the live chain and prices its own EV after friction.</div></div></li>
+    <li><div><div class="what">Adjudicate</div><div class="why">The language
+        model may veto and may shrink. Nothing else.</div></div></li>
+    <li><div><div class="what">Review</div><div class="why">Risk Officer gates
+        each survivor and sets the size.</div></div></li>
+    <li><div><div class="what">Execute</div><div class="why">Single
+        <code>mleg</code> orders, then journal everything — including the
+        refusals.</div></div></li>
+  </ol>
+</section>
+
+<section>
+  <h2>The council</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Agent</th><th>Job</th><th>Can it lose money?</th></tr></thead>
+      <tbody>
+        <tr><td class="name">Analyst</td><td>Trend and regime per symbol in ATR
+            units. Flags vol shocks and RSI exhaustion.</td><td class="no">no</td></tr>
+        <tr><td class="name">Vol Scout</td><td>Is the market paying more for
+            movement than it delivers? Verdict plus a 0–1 confidence.</td><td class="no">no</td></tr>
+        <tr><td class="name">Architect</td><td>Real strikes from the live chain;
+            prices its own EV in dollars after friction.</td><td class="no">no</td></tr>
+        <tr><td class="name">Adjudicator <em>(LLM)</em></td><td>Cross-sectional
+            judgement: correlation, regime coherence, one-way books. Veto and
+            size dial only.</td><td class="no">only downward</td></tr>
+        <tr><td class="name">Risk Officer</td><td>24 deterministic gates,
+            position sizing, kill switches. Holds the veto.</td>
+            <td class="yes">it is what prevents it</td></tr>
+        <tr><td class="name">Position Manager</td><td>Exits: time, target, stop,
+            delta breach. Runs before entries.</td>
+            <td class="yes">this is where the P&amp;L is</td></tr>
+        <tr><td class="name">Bandit</td><td>Beta-Bernoulli posterior per
+            regime × structure, feeding back into scoring and size.</td><td class="no">no</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>What the model is actually for</h3>
+  <p>Arithmetic cannot tell that three of today's candidates are the same index
+  bet in three costumes, that a 1.4× premium across every megacap at once is a
+  macro print being priced rather than five independent gifts, or that the book
+  has quietly become one-way short puts. That is the model's entire job.</p>
+  <p>Its authority is deliberately tiny. It receives a closed list of
+  already-validated structures. <code>size_multiplier</code> is clamped to ≤ 1.0,
+  so there is no way to ask for more size. Invented candidate ids are dropped and
+  logged. <strong>Silence is not consent</strong> — a candidate the model does
+  not mention is discarded. If the call fails or returns unparseable output, the
+  desk continues deterministically and the journal records that it did.</p>
+</section>
+
+<section>
+  <h2>The gate ledger</h2>
+  <p>Ten portfolio gates run once per cycle. Every gate reports its own numbers,
+  and all of them are written to the journal whether they passed or failed.
+  Below is a real cycle, verbatim:</p>
+  <div class="gates">
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">market_open</span><span class="gdet">market open</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">account_tradable</span><span class="gdet">status=ACTIVE</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">options_level</span><span class="gdet">level 3 (need 3 for multi-leg spreads)</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">daily_loss_kill</span><span class="gdet">day P&amp;L +0.00% vs limit −2.50%</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">drawdown_kill</span><span class="gdet">drawdown +0.00% from peak $100,000 vs limit −8.00%</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">bp_reserve</span><span class="gdet">options BP $100,000 = 100% of equity, floor 25%</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">position_count</span><span class="gdet">0 open structures, cap 6</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">net_delta_band</span><span class="gdet">net delta +0 vs band ±150</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">deployed_risk</span><span class="gdet">0.0% of equity at risk, cap 12%</span></div>
+    <div class="gate p"><span class="mark">PASS</span><span class="gname">time_of_day</span><span class="gdet">180 min of session left</span></div>
+  </div>
+
+  <h3>Fourteen more per candidate</h3>
+  <div class="tags">
+    <span class="tag">portfolio_clear</span><span class="tag">structure_permitted</span>
+    <span class="tag">positive_expectancy</span><span class="tag">credit_to_width</span>
+    <span class="tag">short_delta_band</span><span class="tag">prob_touch</span>
+    <span class="tag">debit_reward</span><span class="tag">dte_window</span>
+    <span class="tag">leg_liquidity</span><span class="tag">liquidity_score</span>
+    <span class="tag">per_underlying_cap</span><span class="tag">not_duplicate</span>
+    <span class="tag">earnings_blackout</span><span class="tag">sizing</span>
+  </div>
+
+  <p style="margin-top:20px"><strong>Sizing is a gate, not an afterthought.</strong>
+  If one contract already breaks the per-trade risk limit, the trade does not
+  happen.</p>
+  <div class="formula">qty = floor( min(per_trade_budget, book_headroom) × llm_conviction ÷ max_loss )</div>
+
+  <h3>Refusals are decisions too</h3>
+  <p>A desk that only logs its fills is grading its own homework. Blocked
+  candidates are stored with the gate that stopped each one — from the same
+  cycle:</p>
+  <div class="gates">
+    <div class="gate b"><span class="mark">BLOCK</span><span class="gname">NVDA-IC-5d</span><span class="gdet">credit_to_width</span></div>
+    <div class="gate b"><span class="mark">BLOCK</span><span class="gname">GOOGL-IC-5d</span><span class="gdet">credit_to_width, per_underlying_cap</span></div>
+    <div class="gate b"><span class="mark">BLOCK</span><span class="gname">AMZN-BPS-5d</span><span class="gdet">credit_to_width</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>One intent, three Alpaca pipes</h2>
+  <p>The desk never calls Alpaca directly. It states an <em>intent</em> and a
+  router uses the first transport that can serve it, recording which one did.
+  That provenance table prints after every cycle and is stored per cycle — it is
+  the evidence the CLI and MCP server are load-bearing here rather than
+  decorative.</p>
+  <div class="pipes">
+    <div class="pipe">
+      <div class="pn">Alpaca CLI</div><div class="po">preferred</div>
+      <p>JSON on stdout. Subcommands are <em>probed</em> with <code>--help</code>
+      at startup rather than assumed, and the exact argv is journalled — so any
+      decision can be replayed by hand in a terminal.</p>
+    </div>
+    <div class="pipe">
+      <div class="pn">Alpaca MCP server</div><div class="po">72 tools discovered</div>
+      <p>stdio JSON-RPC. Calls <code>tools/list</code>, reads every advertised
+      tool <em>and its JSON schema</em>, then binds intents onto what the server
+      actually offers. Late binding, not baked.</p>
+    </div>
+    <div class="pipe floor">
+      <div class="pn">REST</div><div class="po">guaranteed floor</div>
+      <p>Standard-library <code>urllib</code>. It exists so the desk never
+      stalls because a binary is missing on someone else's machine.</p>
+    </div>
+  </div>
+
+  <h3>Verified, not assumed</h3>
+  <ul class="plain">
+    <li><b>Spreads go over the CLI, not just REST.</b> <code>alpaca order
+      submit</code> takes <code>--order-class mleg</code> with a
+      <code>--legs</code> JSON array. Its help notes <code>--symbol</code> and
+      <code>--side</code> are “required for all order classes except for mleg” —
+      for a spread they must be omitted, because they are per-leg. Getting that
+      wrong is the difference between one spread and four naked options.</li>
+    <li><b>The dry run is the broker's, not ours.</b> The CLI has its own
+      <code>--dry-run</code> that validates and echoes the request body without
+      submitting, so <code>once --dry-run</code> routes through it.</li>
+    <li><b>Discovery finds the tool; an alias table finds the parameter.</b> The
+      live MCP chain tool calls its underlying <code>root_symbol</code>, and
+      <code>close_position</code> uses <code>symbol_or_asset_id</code> — neither
+      is the obvious guess.</li>
+    <li><b>Credits are negative.</b> Alpaca reports option credits as negative
+      and debits as positive. Because that convention has shifted between
+      releases, the first credit order is sent with the documented sign and, on a
+      price rejection specifically, retried once with the sign flipped — then the
+      answer is remembered and logged. It guesses once, out loud, and then stops.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Honest limitations</h2>
+  <ul class="plain">
+    <li><b>Realised volatility is a backward-looking forecast.</b> A 20-day
+      window is slow to see a regime change. The vol-shock gate and the
+      10-day/20-day ratio are the mitigations, and they are imperfect ones.</li>
+    <li><b>Earnings dates are operator-maintained.</b> Alpaca serves no earnings
+      calendar, so they live in a JSON file. Symbols absent from it are allowed
+      with a note in the journal rather than silently blocked.</li>
+    <li><b>IV rank starts uninformative.</b> It is a percentile of the desk's own
+      observed history, so it needs days of cycles before it means anything.
+      Until then it sits at 50 and contributes nothing.</li>
+    <li><b>The Bandit needs closed trades to say anything.</b> Over a one-week
+      competition its posterior stays close to the 0.5 prior by design — honest
+      infrastructure for a longer run, not a claim to have learned the market in
+      a week.</li>
+    <li><b>Fills are assumed at the haircut price.</b> A limit that does not fill
+      is not a loss, but it is not the trade the EV was computed for either.</li>
+  </ul>
+</section>
+
+<footer>
+  <p><strong>Paper trading only.</strong> Paper results are hypothetical, involve
+  no real funds, and do not represent actual trading or guarantee future results.
+  Nothing here is investment advice or a recommendation to buy or sell any
+  security. Options trading is not suitable for all investors and certain complex
+  strategies carry additional risk; read the OCC's
+  <a href="https://www.theocc.com/company-information/documents-and-archives/options-disclosure-document">Characteristics
+  and Risks of Standardized Options</a> before trading options. The figures on
+  this page come from an offline simulation, labelled as such, and are not a
+  performance claim. MIT licensed.</p>
+</footer>
+
+</div>
+
+</body>
+</html>

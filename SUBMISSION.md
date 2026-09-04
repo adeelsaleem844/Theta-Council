@@ -144,7 +144,12 @@ https://github.com/adeelsaleem844/Theta-Council
 
 ```
 Hosted project page (strategy, risk gates, Alpaca infrastructure):
-https://claude.ai/code/artifact/2b49dc51-935a-41ea-b2cb-570f953be199
+https://adeelsaleem844.github.io/Theta-Council/
+
+Served by GitHub Pages from this repo's /docs folder — public, no login needed.
+If it 404s, Pages has not been switched on yet:
+  repo Settings -> Pages -> Source: "Deploy from a branch" -> main -> /docs -> Save
+It goes live about a minute later.
 
 Live web dashboard, stdlib-only, no build step:
 python -m council dashboard  ->  http://127.0.0.1:8787
@@ -224,7 +229,8 @@ Drafts in `SOCIAL.md`. Tag **@lablabai** and **@AlpacaHQ** on X, and
 - [x] MIT licensed, original work
 
 **Submit**
-- [x] Hosted project page published: https://claude.ai/code/artifact/2b49dc51-935a-41ea-b2cb-570f953be199
+- [x] Hosted project page in repo at /docs
+- [ ] **Enable GitHub Pages** (Settings -> Pages -> main -> /docs) so the URL is public
 - [x] Repo pushed — https://github.com/adeelsaleem844/Theta-Council  (confirm it is set to Public in repo Settings)
 - [x] Cover image built — `assets/cover.png`
 - [ ] Cover image uploaded to the form
