@@ -45,10 +45,27 @@ def say(msg=""):
 def ask(label: str, secret: bool = True) -> str:
     fn = getpass.getpass if secret else input
     try:
-        return fn(f"  {label}: ").strip()
+        raw = fn(f"  {label}: ")
     except (EOFError, KeyboardInterrupt):
         say("\n  cancelled")
         sys.exit(130)
+    # Console pastes routinely carry a trailing newline, stray quotes, or a
+    # zero-width character. Strip them rather than sending them to the API.
+    return raw.strip().strip('"').strip("'").replace("​", "").strip()
+
+
+def shape(name: str, value: str) -> str:
+    """Describe a secret without revealing it, so a bad paste is diagnosable."""
+    if not value:
+        return f"{name}: EMPTY - the paste did not land"
+    head = value[:2] if len(value) >= 2 else "?"
+    notes = []
+    if any(c.isspace() for c in value):
+        notes.append("contains a space")
+    if not value.isascii():
+        notes.append("has non-ASCII characters")
+    extra = (", " + ", ".join(notes)) if notes else ""
+    return f'{name}: {len(value)} characters, starts "{head}"{extra}'
 
 
 # ── validation ───────────────────────────────────────────────────────────────
@@ -112,20 +129,63 @@ def main() -> int:
     say(f"{D}  Nothing you type is echoed, logged, or printed back.{X}")
     say(f"{D}  Alpaca paper keys:  https://app.alpaca.markets/account/configuration -> API{X}\n")
 
-    key = ask("ALPACA_API_KEY    (starts PK)")
-    if not key:
-        say(f"{R}  no key entered, nothing written{X}")
-        return 1
-    secret = ask("ALPACA_SECRET_KEY")
-    if not secret:
-        say(f"{R}  no secret entered, nothing written{X}")
-        return 1
+    key = secret = ""
+    acct = None
+    for attempt in (1, 2, 3):
+        key = ask("ALPACA_API_KEY    (starts PK)")
+        secret = ask("ALPACA_SECRET_KEY")
 
-    say(f"\n  checking against {PAPER} ...")
-    acct, err = check_alpaca(key, secret)
-    if err:
+        # Report the SHAPE of what arrived, never the value. A silent paste
+        # failure is otherwise indistinguishable from a wrong key.
+        say("")
+        say(f"{D}  received  {shape('key   ', key)}{X}")
+        say(f"{D}            {shape('secret', secret)}{X}")
+
+        hints = []
+        if not key or not secret:
+            hints.append("One field is empty. In this window RIGHT-CLICK "
+                         "pastes; Ctrl+V often does not.")
+        elif key == secret:
+            hints.append("Key and secret are identical - the same value went "
+                         "into both prompts.")
+        else:
+            if key.upper().startswith("AK"):
+                hints.append("That key starts 'AK', which is a LIVE key. You "
+                             "need the PAPER key, which starts 'PK'.")
+            elif not key.upper().startswith("PK"):
+                hints.append("A paper key ID normally starts 'PK'. Check you "
+                             "copied the Key ID and not something else.")
+            if len(secret) < 30:
+                hints.append("The secret looks short; it is usually 40+ "
+                             "characters. It may have been truncated.")
+
+        if hints and attempt < 3:
+            say("")
+            for h in hints:
+                say(f"{Y}  ! {h}{X}")
+            say(f"\n{D}  Attempt {attempt} of 3 - let us try again.{X}\n")
+            continue
+
+        say(f"\n  checking against {PAPER} ...")
+        acct, err = check_alpaca(key, secret)
+        if not err:
+            break
+
         say(f"{R}  FAILED: {err}{X}")
-        say(f"{D}  Nothing was written. Fix and re-run.{X}")
+        if attempt >= 3:
+            say(f"{D}  Nothing was written. Fix and re-run this file.{X}")
+            return 1
+        say(f"\n{Y}  Nothing was written. Most likely causes, in order:{X}")
+        say(f"{Y}    1. The secret is shown ONCE, at the moment you generate")
+        say(f"       the key. If you copied it from the page afterwards, it is")
+        say(f"       not the real secret. Click Generate New Key and copy BOTH")
+        say(f"       values from that panel before closing it.{X}")
+        say(f"{Y}    2. The paste silently failed - right-click to paste.{X}")
+        say(f"{Y}    3. These are Live keys rather than Paper keys.{X}")
+        say(f"\n{D}  Attempt {attempt} of 3 - try again.{X}\n")
+
+    if acct is None:
+        say(f"{R}  could not authenticate; nothing written{X}")
         return 1
 
     equity = float(acct.get("equity") or 0)
