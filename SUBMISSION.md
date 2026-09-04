@@ -4,6 +4,32 @@ Deadline: **4 Sep 2026, 8:00 PM PKT**. Fields below map 1:1 to the form.
 
 ---
 
+## Team (create this first — the submission form needs a team)
+
+Create at: https://lablab.ai/event/alpaca-ai-trading-agents-hackathon/team/create
+(requires being signed in; signed out it redirects to /login and 404s)
+
+**Team name**
+
+```
+Theta Council
+```
+
+**Team description**
+
+```
+Building Theta Council: an autonomous options desk on Alpaca that trades the
+variance risk premium in defined-risk spreads. Our design rule is that the
+language model holds a veto and a size dial but never the wheel — 24
+deterministic risk gates run after it, in code that does not read prompts.
+Solo build, paper trading only.
+```
+
+Teams are 1–6 people; a solo team is allowed. Prizes are paid to an individual,
+so if you stay solo you are already the designated payee.
+
+---
+
 ## Project title
 
 ```
