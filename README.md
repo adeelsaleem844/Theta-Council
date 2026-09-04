@@ -217,9 +217,15 @@ Requires **Python 3.10+**. The core has **zero third-party dependencies** —
 
 ```bash
 git clone https://github.com/adeelsaleem844/Theta-Council.git && cd Theta-Council
-cp .env.example .env          # then paste your keys in
+python setup_keys.py          # prompts for keys, validates them, writes .env
 python -m council preflight   # verifies account, level, balance, feeds, pipes
 ```
+
+`setup_keys.py` reads secrets with `getpass`, so nothing is echoed to the
+terminal or left in shell history, and it checks the credentials against the
+live paper API before writing anything. It also tells you your options level and
+equity, which are the two things that most often block a first run. If you would
+rather do it by hand, copy `.env.example` to `.env` and fill it in.
 
 `.env` essentials:
 
