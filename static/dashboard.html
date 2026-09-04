@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theta Council</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121821; --panel2:#0f141b; --line:#1e2733;
+    --ink:#e6edf3; --dim:#8b98a5; --faint:#5c6773;
+    --up:#3fb950; --down:#f85149; --accent:#58a6ff; --warn:#d29922;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  a{color:var(--accent)}
+  header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+         padding:18px 22px;border-bottom:1px solid var(--line);background:var(--panel2)}
+  header h1{margin:0;font-size:17px;letter-spacing:.3px}
+  header .tag{color:var(--dim);font-size:12.5px}
+  header .spacer{flex:1}
+  .pill{font:11px/1 var(--mono);padding:5px 9px;border-radius:999px;
+        border:1px solid var(--line);color:var(--dim);background:var(--panel)}
+  .pill.live{color:var(--up);border-color:#1c3b22}
+  main{padding:18px 22px 60px;max-width:1360px;margin:0 auto}
+  .grid{display:grid;gap:14px}
+  .tiles{grid-template-columns:repeat(auto-fit,minmax(158px,1fr));margin-bottom:16px}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 15px}
+  .tile .k{color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+  .tile .v{font:600 21px/1.25 var(--mono);margin-top:5px}
+  .tile .s{color:var(--dim);font-size:11.5px;margin-top:3px}
+  .pos{color:var(--up)} .neg{color:var(--down)} .neu{color:var(--ink)}
+  section{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+          margin-bottom:16px;overflow:hidden}
+  section > h2{margin:0;padding:12px 15px;font-size:12px;letter-spacing:.7px;
+               text-transform:uppercase;color:var(--dim);
+               border-bottom:1px solid var(--line);background:var(--panel2)}
+  .body{padding:14px 15px}
+  table{width:100%;border-collapse:collapse;font:12.5px/1.5 var(--mono)}
+  th{text-align:left;color:var(--faint);font-weight:500;padding:7px 15px;
+     font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  td{padding:7px 15px;border-top:1px solid var(--line);white-space:nowrap}
+  td.wrap{white-space:normal;font-family:inherit;font-size:12.5px;color:var(--dim)}
+  .scroll{overflow-x:auto}
+  .gate{display:inline-block;font:11px/1 var(--mono);padding:3px 7px;border-radius:5px;
+        background:#2b1416;color:#ff9d95;border:1px solid #46201f;margin:2px 3px 2px 0}
+  .gate.ok{background:#0f2416;color:#8fe0a1;border-color:#1c3b22}
+  .empty{color:var(--faint);padding:16px 15px;font-size:13px}
+  .two{grid-template-columns:1fr 1fr}
+  @media(max-width:900px){.two{grid-template-columns:1fr}}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--dim);font-size:11.5px;
+          padding:0 15px 12px}
+  .swatch{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+  code{font:12px var(--mono);color:var(--dim)}
+  .bar{height:6px;border-radius:3px;background:#1b2430;overflow:hidden;margin-top:6px}
+  .bar > i{display:block;height:100%;background:var(--accent)}
+  footer{color:var(--faint);font-size:11.5px;padding:0 22px 30px;max-width:1360px;margin:0 auto}
+</style>
+</head>
+<body>
+<header>
+  <h1>Theta Council</h1>
+  <span class="tag">autonomous options desk &middot; Alpaca paper</span>
+  <span class="spacer"></span>
+  <span class="pill" id="acct">account —</span>
+  <span class="pill" id="pipes">pipes —</span>
+  <span class="pill" id="model">adjudicator —</span>
+  <span class="pill live" id="beat">live</span>
+</header>
+
+<main>
+  <div class="grid tiles" id="tiles"></div>
+
+  <section>
+    <h2>Equity curve</h2>
+    <div class="body" id="curve"></div>
+  </section>
+
+  <div class="grid two">
+    <section>
+      <h2>Open book</h2>
+      <div class="scroll" id="open"></div>
+    </section>
+    <section>
+      <h2>Risk officer &middot; latest portfolio gates</h2>
+      <div class="body" id="gates"></div>
+    </section>
+  </div>
+
+  <section>
+    <h2>Refused trades &mdash; the gate that stopped each one</h2>
+    <div class="scroll" id="refused"></div>
+  </section>
+
+  <div class="grid two">
+    <section>
+      <h2>Closed trades</h2>
+      <div class="scroll" id="closed"></div>
+    </section>
+    <section>
+      <h2>Track record &middot; regime &times; structure</h2>
+      <div class="scroll" id="track"></div>
+    </section>
+  </div>
+
+  <section>
+    <h2>Alpaca transport provenance</h2>
+    <div class="body" id="prov"></div>
+  </section>
+</main>
+
+<footer>
+  Paper trading only. Hypothetical results, not investment advice. Options
+  carry risk; read the OCC's Characteristics and Risks of Standardized Options.
+</footer>
+
+<script>
+const $ = s => document.querySelector(s);
+const money = n => (n<0?"-":"")+"$"+Math.abs(+n||0).toLocaleString(undefined,{maximumFractionDigits:0});
+const money2 = n => (n<0?"-":"")+"$"+Math.abs(+n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const sign = n => (+n>0?"pos":(+n<0?"neg":"neu"));
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function tile(k,v,s,cls){
+  return `<div class="tile"><div class="k">${k}</div>
+          <div class="v ${cls||"neu"}">${v}</div>
+          ${s?`<div class="s">${s}</div>`:""}</div>`;
+}
+
+function table(cols, rows, emptyMsg){
+  if(!rows.length) return `<div class="empty">${emptyMsg}</div>`;
+  return `<table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join("")}</tr></thead>
+          <tbody>${rows.join("")}</tbody></table>`;
+}
+
+function curve(points){
+  if(!points || points.length < 2)
+    return `<div class="empty">Not enough equity samples yet &mdash; one point is written per cycle.</div>`;
+  const W=1100,H=190,P=34;
+  const ys=points.map(p=>p.equity), lo=Math.min(...ys), hi=Math.max(...ys);
+  const pad=(hi-lo)*0.12||Math.max(1,hi*0.001), y0=lo-pad, y1=hi+pad;
+  const x=i=>P+i*(W-2*P)/(points.length-1);
+  const y=v=>H-P-((v-y0)/(y1-y0))*(H-2*P);
+  const d=points.map((p,i)=>`${i?"L":"M"}${x(i).toFixed(1)},${y(p.equity).toFixed(1)}`).join("");
+  const area=`${d}L${x(points.length-1).toFixed(1)},${H-P}L${P},${H-P}Z`;
+  const first=ys[0], last=ys[ys.length-1];
+  const up = last>=first;
+  const col = up? "var(--up)":"var(--down)";
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="190" role="img"
+            aria-label="Account equity over time">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${col}" stop-opacity=".22"/>
+      <stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${P}" y1="${y(first)}" x2="${W-P}" y2="${y(first)}"
+          stroke="var(--line)" stroke-dasharray="3 4"/>
+    <path d="${area}" fill="url(#g)"/>
+    <path d="${d}" fill="none" stroke="${col}" stroke-width="2"
+          stroke-linejoin="round" stroke-linecap="round"/>
+    <text x="${P}" y="18" fill="var(--dim)" font-size="12" font-family="var(--mono)">
+      ${money2(last)}</text>
+    <text x="${W-P}" y="18" text-anchor="end" fill="${col}" font-size="12"
+          font-family="var(--mono)">
+      ${(last-first>=0?"+":"")}${money2(last-first)} since first cycle</text>
+    <text x="${P}" y="${H-10}" fill="var(--faint)" font-size="11">${esc((points[0].ts||"").slice(0,16))}</text>
+    <text x="${W-P}" y="${H-10}" text-anchor="end" fill="var(--faint)" font-size="11">${esc((points[points.length-1].ts||"").slice(0,16))}</text>
+  </svg>`;
+}
+
+function render(s){
+  const st=s.stats||{}, lc=s.latest_cycle||{}, cfg=s.config||{};
+  const eq=+(st.equity_last||0), eq0=+(st.equity_first||0);
+  const total=eq&&eq0?eq-eq0:0;
+
+  $("#acct").textContent = "account " + (s.account_id || "not set in .env");
+  $("#pipes").textContent = "pipes " + ((cfg.transport_order||[]).join(" → ") || "—");
+  $("#model").textContent = "adjudicator " + (lc.used_llm ? (lc.model||"llm") : "deterministic");
+
+  $("#tiles").innerHTML =
+      tile("Equity", eq?money2(eq):"—",
+           eq0?`opened at ${money(eq0)}`:"awaiting first cycle", sign(total))
+    + tile("Total P&L", (total>=0?"+":"")+money2(total),
+           eq0?((total/eq0*100).toFixed(2)+"% of start"):"", sign(total))
+    + tile("Realised P&L", (st.realized_pl>=0?"+":"")+money2(st.realized_pl||0),
+           `${st.closed||0} closed`, sign(st.realized_pl))
+    + tile("Win rate", (st.win_rate||0)+"%",
+           `${st.wins||0}W / ${st.losses||0}L`, (st.win_rate>=50?"pos":"neu"))
+    + tile("Profit factor", (st.profit_factor||0),
+           `avg win ${money(st.avg_win)} / loss ${money(st.avg_loss)}`,
+           (st.profit_factor>=1?"pos":"neu"))
+    + tile("Capital at risk", money(st.open_risk||0),
+           `${st.open_structures||0} of ${(cfg.risk||{}).max_concurrent_positions||"—"} structures`)
+    + tile("Cycles run", st.cycles||0, `house view ${esc(lc.portfolio_regime||"—")}`)
+    + tile("Trades refused", st.decisions_blocked||0, "logged with the blocking gate");
+
+  $("#curve").innerHTML = curve(s.equity_curve||[]);
+
+  $("#open").innerHTML = table(
+    ["Underlying","Structure","Expiry","Qty","Net","Risk","Legs"],
+    (s.open_book||[]).map(t=>{
+      const legs=(t.legs||[]).map(l=>`${l.side==="buy"?"+":"-"}${l.strike}${(l.kind||"")[0].toUpperCase()}`).join(" ");
+      return `<tr><td>${esc(t.underlying)}</td><td>${esc(t.structure)}</td>
+        <td>${esc(t.expiry)}</td><td>${t.qty}</td>
+        <td>${(+t.net_price).toFixed(2)}</td>
+        <td>${money(t.max_loss*t.qty)}</td><td>${esc(legs)}</td></tr>`;
+    }), "Flat. No open structures.");
+
+  const gates=lc.gates||[];
+  $("#gates").innerHTML = gates.length
+    ? gates.map(g=>`<span class="gate ${g.passed?"ok":""}" title="${esc(g.detail)}">${g.passed?"✓":"✕"} ${esc(g.name)}</span>`).join("")
+      + `<div style="margin-top:12px">` + gates.map(g=>
+        `<div style="color:var(--dim);font-size:12px;margin:3px 0">
+           <code>${esc(g.name)}</code> &mdash; ${esc(g.detail)}</div>`).join("") + `</div>`
+      + (lc.posture ? `<div style="margin-top:12px;color:var(--dim);font-size:12.5px">
+           posture <b style="color:var(--ink)">${esc(lc.posture)}</b>
+           ${lc.posture_reason?"&mdash; "+esc(lc.posture_reason):""}</div>`:"")
+    : `<div class="empty">No cycle recorded yet.</div>`;
+
+  $("#refused").innerHTML = table(
+    ["Candidate","Regime","Risk","EV","Edge","Blocked by"],
+    (s.refused||[]).map(r=>`<tr>
+      <td>${esc(r.cid)}</td><td>${esc(r.regime)}</td>
+      <td>${money(r.max_loss)}</td>
+      <td class="${sign(r.ev_dollars)}">${(+r.ev_dollars>=0?"+":"")}${money(r.ev_dollars)}</td>
+      <td>${((+r.edge_ratio||0)*100).toFixed(1)}%</td>
+      <td>${(String(r.blocked_by||"").split(",").filter(Boolean).map(g=>`<span class="gate">${esc(g)}</span>`).join("")||"<span class=gate>entry cap</span>")}</td>
+      </tr>`),
+    "Nothing refused yet.");
+
+  $("#closed").innerHTML = table(
+    ["Underlying","Structure","Rule","P&L"],
+    (s.closed||[]).map(t=>`<tr><td>${esc(t.underlying)}</td>
+      <td>${esc(t.structure)}</td><td>${esc(t.close_rule||"")}</td>
+      <td class="${sign(t.realized_pl)}">${(+t.realized_pl>=0?"+":"")}${money2(t.realized_pl)}</td>
+      </tr>`), "No closed trades yet.");
+
+  $("#track").innerHTML = table(
+    ["Regime","Structure","W/L","Posterior"],
+    (s.track_record||[]).map(r=>`<tr><td>${esc(r.regime)}</td>
+      <td>${esc(r.structure)}</td><td>${r.wins}W / ${r.losses}L</td>
+      <td>${r.prior}<div class="bar"><i style="width:${(r.prior*100).toFixed(0)}%"></i></div></td>
+      </tr>`), "The desk has no closed trades to learn from yet.");
+
+  const prov=(lc.provenance||{});
+  const totals=prov.totals||{}; const byIntent=prov.by_intent||{};
+  $("#prov").innerHTML =
+    (Object.keys(totals).length
+      ? `<div style="margin-bottom:10px">` + Object.entries(totals).map(([k,v])=>
+          `<span class="gate ok">${esc(k)} &times; ${v}</span>`).join("") + `</div>`
+      : `<div class="empty" style="padding:0 0 10px">No calls recorded yet.</div>`)
+    + (Object.keys(byIntent).length
+      ? `<table><thead><tr><th>Intent</th><th>Served by</th></tr></thead><tbody>`
+        + Object.entries(byIntent).map(([i,by])=>
+          `<tr><td>${esc(i)}</td><td>${Object.entries(by).map(([p,n])=>`${esc(p)} &times;${n}`).join(", ")}</td></tr>`).join("")
+        + `</tbody></table>` : "");
+}
+
+async function poll(){
+  try{
+    const r=await fetch("/api/state",{cache:"no-store"});
+    const s=await r.json();
+    if(s.error) throw new Error(s.error);
+    render(s);
+    $("#beat").textContent="live · "+new Date().toLocaleTimeString();
+    $("#beat").classList.add("live");
+  }catch(e){
+    $("#beat").textContent="offline";
+    $("#beat").classList.remove("live");
+  }
+}
+poll(); setInterval(poll,5000);
+</script>
+</body>
+</html>

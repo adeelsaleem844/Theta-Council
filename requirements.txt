@@ -1,0 +1,7 @@
+# Theta Council's core runs on the Python standard library ONLY.
+# Nothing below is required to trade — they are optional extras.
+#
+#   pip install -r requirements.txt   # optional
+#
+uv            ; python_version >= "3.10"   # to launch: uvx alpaca-mcp-server
+pytest                                     # to run the test suite

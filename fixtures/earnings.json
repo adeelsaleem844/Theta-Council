@@ -1,0 +1,13 @@
+{
+  "_comment": "Operator-maintained. Alpaca does not serve an earnings calendar, so the Risk Officer reads next-confirmed dates from here and blocks any single-name structure whose expiry sits on the far side of an earnings print. Symbols absent from this file are allowed with a note in the journal. ETFs are exempt.",
+  "AAPL": "2026-10-29",
+  "MSFT": "2026-10-27",
+  "NVDA": "2026-11-18",
+  "AMD": "2026-10-27",
+  "META": "2026-10-28",
+  "GOOGL": "2026-10-27",
+  "AMZN": "2026-10-29",
+  "TSLA": "2026-10-21",
+  "AVGO": "2026-12-10",
+  "NFLX": "2026-10-20"
+}
